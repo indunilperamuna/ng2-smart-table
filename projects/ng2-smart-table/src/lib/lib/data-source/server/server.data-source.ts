@@ -9,6 +9,14 @@ import { map } from 'rxjs/operators';
 
 export class ServerDataSource extends LocalDataSource {
 
+  responseMetaPagination: any = { total: 0,
+                                  count: 0,
+                                  per_page: 0,
+                                  current_page: 0,
+                                  total_pages: 0,
+                                  links : {}
+                                };
+
   protected conf: ServerSourceConf;
 
   protected lastRequestCount: number = 0;
@@ -32,7 +40,7 @@ export class ServerDataSource extends LocalDataSource {
       .pipe(map(res => {
         this.lastRequestCount = this.extractTotalFromResponse(res);
         this.data = this.extractDataFromResponse(res);
-
+        this.responseMetaPagination = res.body.meta.pagination;
         return this.data;
       })).toPromise();
   }
